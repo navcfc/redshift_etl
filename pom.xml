@@ -14,7 +14,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.hs.WriteToKafka</mainClass>
+                            <mainClass>com.hs.KafkaWritePipeline</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -50,7 +50,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.hs.WriteToKafka</mainClass>
+                            <mainClass>com.hs.KafkaWritePipeline</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

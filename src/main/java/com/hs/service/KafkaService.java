@@ -18,7 +18,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-public class KafkaTest {
+public class KafkaService {
 
     public Properties getProperties() throws IOException {
         Properties properties = new Properties();
@@ -60,14 +60,14 @@ public class KafkaTest {
         adminClient.close();
     }
 
-    public void writeToTopic(String topicName) throws IOException {
+    public void writeToTopic(String topicName, int recordCount) throws IOException {
 
         Properties properties = getProperties();
         Producer<String, String> producer = new KafkaProducer<String, String>(properties);
 
 
         producer.send(new ProducerRecord<String, String>(topicName,
-                "testing kafka producer","testing 2 "));
+                "count",recordCount+""));
         System.out.println("Message sent successfully");
         producer.close();
     }
