@@ -7,22 +7,47 @@ import com.hs.service.PostgresService;
 import com.hs.util.PGUtil;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
-//class Helper extends TimerTask
-//{
-//    public static int i = 0;
-//    public void run()
-//    {
-////        PostgresService postgreSqlExample = new PostgresService();
-////        String kafkaMessage = postgreSqlExample.runQuery();
-////        System.out.println("\nkafkaMessage: " + kafkaMessage);
-//        System.out.println("Timer ran " + ++i);
-//    }
-//}
+class Helper extends TimerTask
+{
+    public static int i = 0;
+    public void run()
+    {
+//        PostgresService postgreSqlExample = new PostgresService();
+//        String kafkaMessage = postgreSqlExample.runQuery();
+//        System.out.println("\nkafkaMessage: " + kafkaMessage);
+        System.out.println("Timer ran " + ++i);
+        //Fetch the last updated timestamp from the file
+        FileService fileService = new FileService();
+        String maxTimestamp = null;
+        try {
+            maxTimestamp = fileService.fetchTimestamp();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        PostgresService postgresService = new PostgresService();
+        int recordsUpdated = postgresService.runQuery(maxTimestamp);
+
+
+        if(recordsUpdated > 0) {
+            KafkaService kafkaTest = new KafkaService();
+            try {
+                kafkaTest.writeToTopic("test", recordsUpdated);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+}
 
 public class KafkaWritePipeline
 {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
 //        working
         if(args.length != 1){
@@ -34,25 +59,12 @@ public class KafkaWritePipeline
         PGUtil.loadConfigFile(filePath);
 
 
-        //Fetch the last updated timestamp from the file
-        FileService fileService = new FileService();
-        String maxTimestamp = fileService.fetchTimestamp();
 
 
-        PostgresService postgresService = new PostgresService();
-        int recordsUpdated = postgresService.runQuery(maxTimestamp);
+        Timer timer = new Timer();
+        TimerTask task = new Helper();
 
-
-        if(recordsUpdated > 0) {
-            KafkaService kafkaTest = new KafkaService();
-            kafkaTest.writeToTopic("test", recordsUpdated);
-        }
-
-
-//       Timer timer = new Timer();
-//        TimerTask task = new Helper();
-//
-//        timer.schedule(task, 2000, 5000);
+        timer.schedule(task, 2000, 60000);
 
     }
 } 
