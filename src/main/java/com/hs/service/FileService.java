@@ -20,6 +20,7 @@ public class FileService {
         String st;
         st = br.readLine();
 
+        br.close();
         return st;
     }
 
