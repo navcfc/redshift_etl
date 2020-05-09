@@ -15,6 +15,7 @@ public class PostgresService {
         try {
 
 
+            //fetch props
             String hostName = PGUtil.getProperty(Constants.PG_HOST);
             String username = PGUtil.getProperty(Constants.PG_USERNAME);
             String password = PGUtil.getProperty(Constants.PG_PASSWORD);
@@ -30,15 +31,19 @@ public class PostgresService {
 
 
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT count(*) FROM public.orders where " +
-                    "updated_at > '"+maxTimestamp+"'");
+            System.out.println("maxTimestamp from the file is: " + maxTimestamp);
+            //run the count query to get the updated no. of records
+            String countQuery = "SELECT count(*) FROM public.orders where " +
+                    "updated_at > '" + maxTimestamp + "'";
+            System.out.println("countQuery is : " + countQuery);
+
+            //execute the count query
+            ResultSet rs = stmt.executeQuery(countQuery);
 
             while (rs.next()) {
                 count = rs.getInt(1);
                 System.out.println("count is: " + count);
             }
-
-
 
 
         } catch (Exception e) {

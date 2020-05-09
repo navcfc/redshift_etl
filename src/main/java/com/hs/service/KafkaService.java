@@ -53,19 +53,21 @@ public class KafkaService {
         options.listInternal(true); // includes internal topics such as __consumer_offsets
         ListTopicsResult topics = adminClient.listTopics(options);
         Set<String> currentTopicList = topics.names().get();
-        // do your filter logic here......
+
         for (String topicName : currentTopicList) {
             System.out.println("topicName is: " + topicName);
         }
         adminClient.close();
     }
 
+    //function to write to topic
     public void writeToTopic(String topicName, int recordCount) throws IOException {
 
         Properties properties = getProperties();
         Producer<String, String> producer = new KafkaProducer<String, String>(properties);
 
 
+        //send the count as value and the "count" word as key
         producer.send(new ProducerRecord<String, String>(topicName,
                 "count",recordCount+""));
         System.out.println("Message sent successfully");
