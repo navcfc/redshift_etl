@@ -35,7 +35,7 @@ class Helper extends TimerTask {
             KafkaService kafkaTest = new KafkaService();
             try {
                 //write the changed count to a kafka topic
-                kafkaTest.writeToTopic("test", recordsUpdated);
+                kafkaTest.writeToTopic(recordsUpdated);
             } catch (IOException e) {
                 e.printStackTrace();
             }

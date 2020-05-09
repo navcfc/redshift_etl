@@ -1,5 +1,7 @@
 package com.hs.service;
 
+import com.hs.constants.Constants;
+import com.hs.util.PGUtil;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ListTopicsOptions;
 import org.apache.kafka.clients.admin.ListTopicsResult;
@@ -19,6 +21,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 public class KafkaService {
+
 
     public Properties getProperties() throws IOException {
         Properties properties = new Properties();
@@ -61,16 +64,21 @@ public class KafkaService {
     }
 
     //function to write to topic
-    public void writeToTopic(String topicName, int recordCount) throws IOException {
+    public void writeToTopic(int recordCount) throws IOException {
+
+        String topicName = PGUtil.getProperty(Constants.TOPIC_NAME);
 
         Properties properties = getProperties();
         Producer<String, String> producer = new KafkaProducer<String, String>(properties);
 
 
+        //get the max timestamp that needs to be sent to kafka to be stored for future calls
+        PostgresService postgresService = new PostgresService();
+        String maxTime = postgresService.fetchMaxTimestamp();
         //send the count as value and the "count" word as key
         producer.send(new ProducerRecord<String, String>(topicName,
-                "count",recordCount+""));
-        System.out.println("Message sent successfully");
+                "count",recordCount+","+maxTime.trim()));
+        System.out.println("Message sent successfully" );
         producer.close();
     }
 
