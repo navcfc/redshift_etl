@@ -9,14 +9,14 @@ public class PGUtil {
     private static String configFilePath = "";
     public static Properties pgProps = null;
 
-    public static String getProperty(String name){
+    public static String getProperty(String name) {
         String str = "";
         str = pgProps.get(name).toString();
         return str;
 
     }
 
-    public static void loadConfigFile(String filePath){
+    public static void loadConfigFile(String filePath) {
         configFilePath = filePath;
         pgProps = new Properties();
 
@@ -26,6 +26,7 @@ public class PGUtil {
             e.printStackTrace();
         }
     }
+
     public String getPropertyForDB(String prop) {
         Properties properties = new Properties();
 

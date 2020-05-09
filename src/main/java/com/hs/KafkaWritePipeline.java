@@ -10,14 +10,11 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-class Helper extends TimerTask
-{
+class Helper extends TimerTask {
     public static int i = 0;
-    public void run()
-    {
-//        PostgresService postgreSqlExample = new PostgresService();
-//        String kafkaMessage = postgreSqlExample.runQuery();
-//        System.out.println("\nkafkaMessage: " + kafkaMessage);
+
+    public void run() {
+
         System.out.println("Timer ran " + ++i);
         //Fetch the last updated timestamp from the file
         FileService fileService = new FileService();
@@ -29,13 +26,15 @@ class Helper extends TimerTask
         }
 
 
+        //check the count of changes from the last timestamp
         PostgresService postgresService = new PostgresService();
         int recordsUpdated = postgresService.runQuery(maxTimestamp);
 
 
-        if(recordsUpdated > 0) {
+        if (recordsUpdated > 0) {
             KafkaService kafkaTest = new KafkaService();
             try {
+                //write the changed count to a kafka topic
                 kafkaTest.writeToTopic("test", recordsUpdated);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -45,26 +44,27 @@ class Helper extends TimerTask
     }
 }
 
-public class KafkaWritePipeline
-{
+public class KafkaWritePipeline {
     public static void main(String[] args) {
 
-//        working
-        if(args.length != 1){
+//      check arguments
+        if (args.length != 1) {
             System.out.println("Invalid number of imput params: Please follow the" +
                     "ordering: 1.Properties file path");
             System.exit(-1);
         }
         String filePath = args[0];
+
+        //load configurations
         PGUtil.loadConfigFile(filePath);
 
 
-
-
+        //set a timer
         Timer timer = new Timer();
         TimerTask task = new Helper();
 
-        timer.schedule(task, 2000, 60000);
+        //set a timer of 2 and a half minutes with a first time delay of 30 seconds
+        timer.schedule(task, 30000, 150000);
 
     }
 } 
