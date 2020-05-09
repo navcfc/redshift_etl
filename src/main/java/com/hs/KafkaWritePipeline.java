@@ -63,8 +63,8 @@ public class KafkaWritePipeline {
         Timer timer = new Timer();
         TimerTask task = new Helper();
 
-        //set a timer of 2 and a half minutes with a first time delay of 30 seconds
-        timer.schedule(task, 30000, 150000);
+        //set a timer of 1 minute with a first time delay of 30 seconds
+        timer.schedule(task, 30000, 60000);
 
     }
 } 
